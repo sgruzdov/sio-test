@@ -1,0 +1,40 @@
+services:
+    php-sio-test:
+      container_name: php-sio-test
+      user: app
+      build:
+        context: .
+        args:
+          USER_ID: ${USER_ID}
+      ports:
+        - "8337:8337"
+      environment:
+        APP_ENV: dev
+        PHP_IDE_CONFIG: serverName=sio-test
+      extra_hosts:
+        - host.docker.internal:host-gateway
+      volumes:
+        - ./www:/home/sio-test/htdocs/:rw
+      restart: always
+      networks:
+        - sio-test-network
+    mysql-sio-test:
+      container_name: mysql-sio-test
+      image: mysql:8.0.37
+      environment:
+        MYSQL_ROOT_PASSWORD: systemioPassword
+        MYSQL_DATABASE: sio-test
+        MYSQL_USER: sio-test
+        MYSQL_PASSWORD: 2f24f24f2h6
+      ports:
+        - "3306:3306"
+      volumes:
+        - ./mysql:/var/lib/mysql
+      restart: always
+      networks:
+        - sio-test-network
+volumes:
+    sio-test:
+networks:
+    sio-test-network:
+        driver: bridge
