@@ -35,6 +35,17 @@ console: ## Login in console.
 install:
 	${DC_RUN} php composer.phar install
 
+init-db: apply-migrations apply-fixtures ## Initialize DB structure
+
+apply-migrations: ## Apply basic structure
+	${DC_RUN} php bin/console --no-interaction doctrine:migrations:migrate
+
+apply-fixtures: ## Apply fixtures
+	${DC_RUN} php bin/console doctrine:fixtures:load
+
+init-test-env: ## Initialize db for unit testing
+	${DC_RUN} sh before-test.sh
+
 success-message:
 	@echo "You can now access the application at http://localhost:8337"
 	@echo "Good luck! 🚀"
