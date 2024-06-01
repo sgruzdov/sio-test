@@ -2,6 +2,8 @@
 
 namespace App;
 
+require_once dirname(__DIR__) . '/util/functions.php';
+
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\VarDumper\VarDumper;

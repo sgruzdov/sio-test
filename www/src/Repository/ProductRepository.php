@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Entity\Product;
+
 /**
  * Class ProductRepository
  *
@@ -20,4 +22,21 @@ namespace App\Repository;
  */
 class ProductRepository extends AbstractRepository
 {
+    /**
+     * @param int $id
+     * @return Product|null
+     */
+    public function getEntityById(int $id): ?Product
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        $qb->select('e')
+            ->from(Product::class, 'e')
+            ->where($qb->expr()->eq('e.id', ':id'))
+            ->andWhere($qb->expr()->eq('e.isActive', ':isActive'))
+            ->setParameter('id', $id)
+            ->setParameter('isActive', true);
+
+        return $this->getSingleResult($qb);
+    }
 }
