@@ -1,0 +1,93 @@
+### Calculate Price (Success)
+POST http://127.0.0.1:8337/calculate-price
+Accept: application/json
+Content-Type: application/json
+
+{
+  "product": 1,
+  "taxNumber": "DE123456789",
+  "couponCode": "SIO5"
+}
+
+> {%
+  client.test('Calculate price', () => client.assert(response.body['payload']['price'] === 113.05))
+%}
+
+### Calculate Price (Empty product, tax number, coupon)
+POST http://127.0.0.1:8337/calculate-price
+Accept: application/json
+Content-Type: application/json
+
+> {%
+  client.test('Calculate price empty fields validation', () => {
+    client.assert(response.body['errors']['product'] === 'Поле обязательно для заполнения');
+    client.assert(response.body['errors']['taxNumber'] === 'Поле обязательно для заполнения');
+    client.assert(response.body['errors']['coupon'] === undefined)
+  })
+%}
+
+### Calculate Price (Incorrect product, tax number, coupon)
+POST http://127.0.0.1:8337/calculate-price
+Accept: application/json
+Content-Type: application/json
+
+{
+  "product": 4,
+  "taxNumber": "DE12345678",
+  "couponCode": "SI50"
+}
+
+> {%
+  client.test('Calculate price incorrect fields validation', () => {
+    client.assert(response.body['errors']['product'] === 'Получен некорректный продукт');
+    client.assert(response.body['errors']['taxNumber'] === 'Получен некорректный налоговый номер');
+    client.assert(response.body['errors']['coupon'] === 'Получен некорректный купон');
+  })
+%}
+
+### Execute Purchase (Success)
+POST http://127.0.0.1:8337/purchase
+Accept: application/json
+Content-Type: application/json
+
+{
+  "product": 1,
+  "taxNumber": "IT12345678900",
+  "couponCode": "SIO5",
+  "paymentProcessor": "paypal"
+}
+
+> {%
+  client.test('Purchase', () => client.assert(response.body['messages'][0] === 'Оплата прошла успешно'))
+%}
+
+### Execute Purchase (Empty paymentProcessor)
+POST http://127.0.0.1:8337/purchase
+Accept: application/json
+Content-Type: application/json
+
+{
+  "product": 1,
+  "taxNumber": "IT12345678900",
+  "couponCode": "SIO5"
+}
+
+> {%
+  client.test('Purchase empty paymentProcessor validation', () => client.assert(response.body['errors']['paymentProcessor'] === 'Поле обязательно для заполнения'))
+%}
+
+### Execute Purchase (Incorrect paymentProcessor)
+POST http://127.0.0.1:8337/purchase
+Accept: application/json
+Content-Type: application/json
+
+{
+  "product": 1,
+  "taxNumber": "IT12345678900",
+  "couponCode": "SIO5",
+  "paymentProcessor": "mir"
+}
+
+> {%
+  client.test('Purchase incorrect paymentProcessor validation', () => client.assert(response.body['errors']['paymentProcessor'] === 'Получен некорректный тип оплаты'))
+%}

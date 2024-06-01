@@ -53,7 +53,7 @@ class CalculationTest extends TestCase
         self::assertEquals(0, $calculation->getProduct());
         self::assertEquals(null, $calculation->getTaxNumber());
         self::assertEquals(null, $calculation->getCoupon());
-        self::assertEquals(PaymentProcessorType::INVALID, $calculation->getPaymentProcessor());
+        self::assertEquals(null, $calculation->getPaymentProcessor());
     }
 
     /**

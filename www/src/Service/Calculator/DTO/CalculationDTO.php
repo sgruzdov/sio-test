@@ -138,7 +138,7 @@ class CalculationDTO
     {
         $paymentProcessor = $data['paymentProcessor'] ?? null;
 
-        if (!$paymentProcessor instanceof PaymentProcessorType) {
+        if (!$paymentProcessor instanceof PaymentProcessorType && $paymentProcessor !== null) {
             $paymentProcessor = PaymentProcessorType::tryFromString(to_string($paymentProcessor));
         }
 
